@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HudsonSettings.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com.capitalone.dashboard:jenkins-build-collector</a> &gt; <a href="index.source.html" class="el_package">com.capitalone.dashboard.collector</a> &gt; <span class="el_source">HudsonSettings.java</span></div><h1>HudsonSettings.java</h1><pre class="source lang-java linenums">package com.capitalone.dashboard.collector;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+/**
+ * Bean to hold settings specific to the Hudson collector.
+ */
+@Component
+@ConfigurationProperties(prefix = &quot;jenkins&quot;)
+<span class="fc" id="L15">public class HudsonSettings {</span>
+
+	
+    private String cron;
+<span class="fc" id="L19">    private boolean saveLog = false;</span>
+<span class="fc" id="L20">    private List&lt;String&gt; servers = new ArrayList&lt;&gt;();</span>
+    private List&lt;String&gt; niceNames;
+    //eg. DEV, QA, PROD etc
+<span class="fc" id="L23">    private List&lt;String&gt; environments = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">    private List&lt;String&gt; usernames = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">    private List&lt;String&gt; apiKeys = new ArrayList&lt;&gt;();</span>
+    private String dockerLocalHostIP; //null if not running in docker on http://localhost
+    private int pageSize;
+    @Value(&quot;${folderDepth:10}&quot;)
+    private int folderDepth;
+
+    @Value(&quot;${jenkins.connectTimeout:20000}&quot;)
+    private int connectTimeout;
+
+    @Value(&quot;${jenkins.readTimeout:20000}&quot;)
+    private int readTimeout;
+
+    public String getCron() {
+<span class="nc" id="L38">        return cron;</span>
+    }
+
+    public void setCron(String cron) {
+<span class="nc" id="L42">        this.cron = cron;</span>
+<span class="nc" id="L43">    }</span>
+
+    public boolean isSaveLog() {
+<span class="fc" id="L46">        return saveLog;</span>
+    }
+
+    public void setSaveLog(boolean saveLog) {
+<span class="nc" id="L50">        this.saveLog = saveLog;</span>
+<span class="nc" id="L51">    }</span>
+
+    public List&lt;String&gt; getServers() {
+<span class="fc" id="L54">        return servers;</span>
+    }
+
+    public void setServers(List&lt;String&gt; servers) {
+<span class="fc" id="L58">        this.servers = servers;</span>
+<span class="fc" id="L59">    }</span>
+    
+    public List&lt;String&gt; getUsernames() {
+<span class="fc" id="L62">        return usernames;</span>
+    }
+
+    public void setUsernames(List&lt;String&gt; usernames) {
+<span class="fc" id="L66">        this.usernames = usernames;</span>
+<span class="fc" id="L67">    }</span>
+    
+    public List&lt;String&gt; getApiKeys() {
+<span class="fc" id="L70">        return apiKeys;</span>
+    }
+
+    public void setApiKeys(List&lt;String&gt; apiKeys) {
+<span class="fc" id="L74">        this.apiKeys = apiKeys;</span>
+<span class="fc" id="L75">    }</span>
+    
+    public void setDockerLocalHostIP(String dockerLocalHostIP) {
+<span class="nc" id="L78">        this.dockerLocalHostIP = dockerLocalHostIP;</span>
+<span class="nc" id="L79">    }</span>
+
+    public List&lt;String&gt; getNiceNames() {
+<span class="nc" id="L82">        return niceNames;</span>
+    }
+
+    public void setNiceNames(List&lt;String&gt; niceNames) {
+<span class="nc" id="L86">        this.niceNames = niceNames;</span>
+<span class="nc" id="L87">    }</span>
+
+    public List&lt;String&gt; getEnvironments() {
+<span class="nc" id="L90">        return environments;</span>
+    }
+
+    public void setEnvironments(List&lt;String&gt; environments) {
+<span class="nc" id="L94">        this.environments = environments;</span>
+<span class="nc" id="L95">    }</span>
+
+    //Docker NATs the real host localhost to 10.0.2.2 when running in docker
+	//as localhost is stored in the JSON payload from jenkins we need
+	//this hack to fix the addresses
+    public String getDockerLocalHostIP() {
+    	
+    		//we have to do this as spring will return NULL if the value is not set vs and empty string
+<span class="fc" id="L103">    	String localHostOverride = &quot;&quot;;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">    	if (dockerLocalHostIP != null) {</span>
+<span class="nc" id="L105">    		localHostOverride = dockerLocalHostIP;</span>
+    	}
+<span class="fc" id="L107">        return localHostOverride;</span>
+    }
+    
+    public void setPageSize(int pageSize) {
+<span class="fc" id="L111">		this.pageSize = pageSize;</span>
+<span class="fc" id="L112">	}</span>
+    
+    public int getPageSize() {
+<span class="fc" id="L115">		return pageSize;</span>
+	}
+
+    public void setFolderDepth(int folderDepth) {
+<span class="nc" id="L119">        this.folderDepth = folderDepth;</span>
+<span class="nc" id="L120">    }</span>
+
+    public int getFolderDepth() {
+<span class="fc" id="L123">        return folderDepth;</span>
+    }
+
+<span class="nc" id="L126">    public int getConnectTimeout() { return connectTimeout; }</span>
+
+<span class="nc" id="L128">    public void setConnectTimeout(int connectTimeout) { this.connectTimeout = connectTimeout; }</span>
+
+<span class="nc" id="L130">    public int getReadTimeout() { return readTimeout; }</span>
+
+<span class="nc" id="L132">    public void setReadTimeout(int readTimeout) { this.readTimeout = readTimeout; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

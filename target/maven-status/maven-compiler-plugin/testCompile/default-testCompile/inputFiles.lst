@@ -1,0 +1,2 @@
+/root/devops/hygieia-build-jenkins-collector/src/test/java/com/capitalone/dashboard/collector/DefaultHudsonClientTests.java
+/root/devops/hygieia-build-jenkins-collector/src/test/java/com/capitalone/dashboard/collector/HudsonCollectorTaskTests.java
